@@ -1,7 +1,5 @@
 const caesar = function(originalString, shiftValue) {
     let result = "";
-    // Get the charcode at a specific index, then add the shiftValue to it, finally
-    // convert it back to a char and append to result
 
     for(let i = 0; i < originalString.length; i++) {
         if(originalString[i].match(/\W/)) {
@@ -9,11 +7,29 @@ const caesar = function(originalString, shiftValue) {
             continue;
         }
         let code = originalString.charCodeAt(i);
-        if(code >= 65 && code <= 90) {
-            
-        }
-        let shiftedCode = code + shiftValue;
 
+        // Allows us to work with both upper and lowercase letters without having to
+        // reference the specific charcode range each time
+        let adjustForAlphabet = 96;
+        if(code >= 65 && code <= 90) {
+            adjustForAlphabet = 64;
+        } 
+        code -= adjustForAlphabet;
+
+        // Anything over 26 just loops around again and ends up at the same place.
+        // Trimming the fat.
+        if(Math.abs(shiftValue) > 26) {
+            shiftValue %= 26;
+        }
+
+        shiftedCode = shiftValue + code;
+        if(shiftedCode < 0) {
+            shiftedCode = 26 + shiftedCode;
+        } else if(shiftedCode > 26) {
+            shiftedCode -= 26;
+        }
+
+        shiftedCode += adjustForAlphabet;
         result += String.fromCharCode(shiftedCode);
     }
 
